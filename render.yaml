@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: pulseguard-kaggle-agent
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py --host 0.0.0.0
+    healthCheckPath: /api/summary
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+

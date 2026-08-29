@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+node_modules/
+portfolio_render/
+tmp/
+*.inspect.ndjson
+.DS_Store
+create_portfolio.mjs
+create_prd.py
+启动PulseGuard.bat
+screenshots/01_workspace_before_agent.png
+screenshots/03_mobile_workspace.png
+screenshots/04_workspace_final.png

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PulseGuard 社区沉默预警 Agent</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">PG</div>
+      <div>
+        <h1>PulseGuard</h1>
+        <p>社区沉默预警 Agent</p>
+      </div>
+    </div>
+    <nav class="top-nav" aria-label="主导航">
+      <button class="nav-item active" data-view="workspace">工作台</button>
+      <button class="nav-item" data-view="evaluation">模型评测</button>
+      <button class="nav-item" data-view="method">方法说明</button>
+    </nav>
+    <div class="mode-label"><span></span>离线原型模式</div>
+  </header>
+
+  <main>
+    <section id="workspaceView" class="view active">
+      <div class="metric-strip" aria-label="核心指标">
+        <div><span>分析用户</span><strong id="metricUsers">--</strong><small>匿名用户</small></div>
+        <div><span>高风险用户</span><strong id="metricHighRisk">--</strong><small>当前最新活跃月</small></div>
+        <div><span>时间留出 AUC</span><strong id="metricAuc">--</strong><small>2024-2025 测试集</small></div>
+        <div><span>测试准确率</span><strong id="metricAccuracy">--</strong><small>阈值 0.50</small></div>
+      </div>
+
+      <div class="workspace-grid">
+        <aside class="user-browser" aria-label="用户列表">
+          <div class="section-title">
+            <div><h2>风险队列</h2><p id="userCount">正在加载</p></div>
+          </div>
+          <label class="search-field">
+            <span>搜索</span>
+            <input id="userSearch" type="search" placeholder="输入匿名用户 ID">
+          </label>
+          <div class="segment-control" role="group" aria-label="风险筛选">
+            <button class="active" data-tier="全部">全部</button>
+            <button data-tier="高风险">高</button>
+            <button data-tier="中风险">中</button>
+            <button data-tier="低风险">低</button>
+          </div>
+          <div class="user-list-header">
+            <span>用户</span><span>最近活跃</span><span>风险</span>
+          </div>
+          <div id="userList" class="user-list"></div>
+        </aside>
+
+        <section class="diagnosis-panel" aria-live="polite">
+          <div class="diagnosis-header">
+            <div>
+              <span class="eyebrow">用户诊断</span>
+              <h2 id="selectedUser">请选择用户</h2>
+            </div>
+            <div id="riskBadge" class="risk-badge neutral">等待分析</div>
+          </div>
+
+          <div class="profile-band">
+            <div><span>当月提交</span><strong id="profileSubmissions">--</strong></div>
+            <div><span>活跃天数</span><strong id="profileDays">--</strong></div>
+            <div><span>参与竞赛</span><strong id="profileCompetitions">--</strong></div>
+            <div><span>历史月均提交</span><strong id="profileAverage">--</strong></div>
+          </div>
+
+          <div class="diagnosis-columns">
+            <section class="factor-section">
+              <div class="section-title inline">
+                <h3>关键影响因素</h3><span>模型贡献值</span>
+              </div>
+              <div id="factorList" class="factor-list empty-state">选择风险队列中的用户开始分析</div>
+            </section>
+
+            <section class="action-section">
+              <div class="section-title inline">
+                <h3>运营干预建议</h3><span>人工复核</span>
+              </div>
+              <ol id="actionList" class="action-list"><li>尚未生成建议</li></ol>
+            </section>
+          </div>
+
+          <section class="agent-console">
+            <div class="console-head">
+              <div><h3>Agent 分析</h3><p>查询、计算、解释与策略工具按需编排</p></div>
+              <button id="runAgent" class="primary-command" disabled>运行诊断</button>
+            </div>
+            <div class="question-row">
+              <input id="agentQuestion" value="分析该用户的长期沉默风险并给出运营建议" aria-label="Agent问题">
+            </div>
+            <div id="agentAnswer" class="agent-answer">选择用户后运行诊断。</div>
+            <details id="traceDetails">
+              <summary>查看工具调用轨迹</summary>
+              <div id="toolTrace" class="tool-trace"></div>
+            </details>
+          </section>
+        </section>
+      </div>
+    </section>
+
+    <section id="evaluationView" class="view content-view">
+      <div class="content-heading"><span class="eyebrow">离线验证</span><h2>时间留出评测</h2></div>
+      <div class="evaluation-layout">
+        <div class="evaluation-metrics">
+          <div><span>测试样本</span><strong id="evalRows">--</strong></div>
+          <div><span>ROC AUC</span><strong id="evalAuc">--</strong></div>
+          <div><span>准确率</span><strong id="evalAccuracy">--</strong></div>
+          <div><span>召回率</span><strong id="evalRecall">--</strong></div>
+          <div><span>F1</span><strong id="evalF1">--</strong></div>
+          <div><span>Brier</span><strong id="evalBrier">--</strong></div>
+        </div>
+        <div class="evaluation-copy">
+          <h3>评测口径</h3>
+          <p id="labelDefinition"></p>
+          <dl>
+            <dt>训练区间</dt><dd id="trainPeriod"></dd>
+            <dt>测试区间</dt><dd id="testPeriod"></dd>
+            <dt>对照基线</dt><dd>使用训练集正例率作为统一风险分数</dd>
+          </dl>
+          <h3>使用边界</h3>
+          <ul id="limitationList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="methodView" class="view content-view">
+      <div class="content-heading"><span class="eyebrow">产品机制</span><h2>Agent 工具链</h2></div>
+      <div class="workflow-list">
+        <div><span>01</span><h3>用户画像查询</h3><p>读取匿名用户最新活跃行为及历史参与信息。</p></div>
+        <div><span>02</span><h3>风险计算</h3><p>调用时间切分验证的逻辑回归模型生成排序分数。</p></div>
+        <div><span>03</span><h3>因素解释</h3><p>根据标准化特征贡献识别风险和保护信号。</p></div>
+        <div><span>04</span><h3>策略生成</h3><p>匹配任务推荐、资源补充、召回和人工跟进动作。</p></div>
+      </div>
+      <div class="method-note">
+        <h3>当前版本</h3>
+        <p>原型以可复现的离线规则编排完成工具调用，不依赖API密钥。后续可在保留数据工具和人工复核机制的前提下接入大模型，负责自然语言理解与结果组织。</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

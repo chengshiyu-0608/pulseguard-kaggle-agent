@@ -1,0 +1,15 @@
+{
+  "source": "Meta Kaggle public activity data",
+  "panel_rows": 62471,
+  "panel_users": 1000,
+  "modeling_rows": 2306,
+  "modeling_users": 975,
+  "latest_users": 1000,
+  "risk_distribution": {
+    "高风险": 445,
+    "中风险": 434,
+    "低风险": 121
+  },
+  "test_auc": 0.7767224551764026,
+  "test_accuracy": 0.7362869198312236
+}

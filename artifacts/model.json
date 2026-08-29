@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "algorithm": "L2 regularized logistic regression (NumPy IRLS)",
+  "features": [
+    "log_submissions_current",
+    "log_active_days_current",
+    "log_active_competitions_current",
+    "recent_activity_momentum_lag1",
+    "log_hist_avg_submissions_lag1",
+    "log_n_comp_sources_lag1",
+    "effort_momentum_mismatch_lag1",
+    "log_cum_months_lag1",
+    "log_cum_submissions_lag1"
+  ],
+  "feature_labels": {
+    "log_submissions_current": "当月提交集中度",
+    "log_active_days_current": "当月活跃天数",
+    "log_active_competitions_current": "当月参与竞赛数",
+    "recent_activity_momentum_lag1": "近期活跃动量",
+    "log_hist_avg_submissions_lag1": "历史月均提交",
+    "log_n_comp_sources_lag1": "竞赛资源连接",
+    "effort_momentum_mismatch_lag1": "投入与动量错配",
+    "log_cum_months_lag1": "历史参与时长",
+    "log_cum_submissions_lag1": "历史累计提交"
+  },
+  "medians": [
+    1.791759469228055,
+    1.0986122886681098,
+    0.6931471805599453,
+    0.0,
+    1.7047480922384253,
+    0.0,
+    0.0,
+    1.9459101490553132,
+    3.2188758248682006
+  ],
+  "means": [
+    1.9119653657041904,
+    1.3706605165211994,
+    0.7849777477352692,
+    0.07379018857518459,
+    1.7828524785675424,
+    0.1121761052886887,
+    0.6544756628230723,
+    1.9923112042886002,
+    3.2803041870830456
+  ],
+  "scales": [
+    1.0211157040187682,
+    0.7083889867472494,
+    0.22815471668113155,
+    0.8559049384184002,
+    0.8299414088140254,
+    0.5867186917136331,
+    3.0410108864432264,
+    0.8021475043999272,
+    1.2619087033204361
+  ],
+  "coefficients": [
+    -0.23391207048449114,
+    0.41650825689658577,
+    -0.9283915246287331,
+    -0.28139934743316236,
+    0.1001698396338562,
+    0.42989148929040877,
+    -0.08241258985364439,
+    0.062357825363819785,
+    0.3549905184500571,
+    -0.7924951508483197,
+    0.0,
+    0.0,
+    0.0,
+    0.17547973812738407,
+    0.11593006247450673,
+    0.0,
+    0.17547973812704656,
+    0.11593006247429355,
+    0.11593006247450671
+  ],
+  "risk_thresholds": {
+    "high": 0.7,
+    "medium": 0.45
+  },
+  "train_cutoff": "2023-12-01"
+}
