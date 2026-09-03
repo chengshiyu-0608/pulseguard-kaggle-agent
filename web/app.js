@@ -20,10 +20,8 @@ async function loadSummary() {
   const response = await fetch("/api/summary");
   state.summary = await response.json();
   const { overview, evaluation } = state.summary;
-  $("#metricUsers").textContent = overview.latest_users.toLocaleString();
   $("#metricHighRisk").textContent = overview.risk_distribution["高风险"].toLocaleString();
-  $("#metricAuc").textContent = evaluation.test.roc_auc.toFixed(3);
-  $("#metricAccuracy").textContent = pct(evaluation.test.accuracy);
+  $("#metricAccuracy").textContent = pct(overview.risk_distribution["高风险"] / overview.latest_users);
 
   $("#evalRows").textContent = evaluation.test.rows.toLocaleString();
   $("#evalAuc").textContent = evaluation.test.roc_auc.toFixed(3);
@@ -54,11 +52,14 @@ function renderUsers() {
     return;
   }
   list.innerHTML = state.users.map((user) => `
-    <button class="user-row ${state.selected?.user_id === user.user_id ? "active" : ""}" data-user="${user.user_id}">
+    <div class="user-row ${state.selected?.user_id === user.user_id ? "active" : ""}" data-user="${user.user_id}" role="button" tabindex="0">
       <span class="user-id">${user.user_id}</span>
       <span class="user-month">${user.month}</span>
       <span class="score ${riskClass(user.risk_tier)}">${pct(user.risk_score, 0)}</span>
-    </button>
+      <span>${user.risk_type || (user.active_days <= 2 ? "活跃下降型" : "参与动量不足")}</span>
+      <span class="status ${user.status === "已处理" || user.status === "已触达" ? "done" : ""}">${user.status || "待处理"}</span>
+      <span><button type="button" class="view-btn">查看</button></span>
+    </div>
   `).join("");
   $$(".user-row").forEach((row) => {
     row.addEventListener("click", () => selectUser(state.users.find((user) => user.user_id === row.dataset.user)));
@@ -69,6 +70,7 @@ function selectUser(user) {
   state.selected = user;
   renderUsers();
   $("#selectedUser").textContent = user.user_id;
+  $("#drawerRisk").textContent = pct(user.risk_score);
   const badge = $("#riskBadge");
   badge.className = `risk-badge ${riskClass(user.risk_tier)}`;
   badge.textContent = `${user.risk_tier} · ${pct(user.risk_score)}`;
@@ -94,6 +96,7 @@ function selectUser(user) {
   $("#sendTouch").disabled = false;
   $("#markHandled").disabled = false;
   $("#actionStatus").textContent = "";
+  $("#actionHint").textContent = "建议：先生成运营建议，再选择触达渠道";
 }
 
 async function runAgent() {
@@ -112,6 +115,7 @@ async function runAgent() {
   const result = await response.json();
   $("#agentAnswer").textContent = result.answer || result.error;
   $("#actionList").innerHTML = (result.recommendation?.actions || []).map((action) => `<li>${action}</li>`).join("");
+  $("#actionHint").textContent = result.recommendation?.actions?.[0] || "建议已生成，请人工复核";
   $("#toolTrace").innerHTML = (result.tool_trace || []).map((item) => `
     <div class="tool-item"><strong>${item.tool}</strong><span>${item.summary}</span></div>
   `).join("");
@@ -148,9 +152,9 @@ function setupNavigation() {
 }
 
 function setupFilters() {
-  $$(".segment-control button").forEach((button) => {
+  $$(".segments button").forEach((button) => {
     button.addEventListener("click", () => {
-      $$(".segment-control button").forEach((item) => item.classList.remove("active"));
+      $$(".segments button").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
       state.tier = button.dataset.tier;
       state.selected = null;
