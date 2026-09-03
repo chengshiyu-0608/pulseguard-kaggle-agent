@@ -52,19 +52,28 @@ class Handler(BaseHTTPRequestHandler):
             except KeyError as error:
                 self.send_json({"error": str(error)}, HTTPStatus.NOT_FOUND)
             return
+        if parsed.path == "/api/records":
+            self.send_json({"records": AGENT.list_records()})
+            return
         self.serve_static(parsed.path)
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
-        if parsed.path != "/api/chat":
+        if parsed.path not in {"/api/chat", "/api/action"}:
             self.send_json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length) or b"{}")
-            self.send_json(
-                AGENT.diagnose(payload.get("user_id", ""), payload.get("question", ""))
-            )
+            if parsed.path == "/api/action":
+                result = AGENT.apply_action(
+                    payload.get("user_id", ""),
+                    payload.get("action", ""),
+                    payload.get("channel", ""),
+                )
+                self.send_json(result)
+                return
+            self.send_json(AGENT.diagnose(payload.get("user_id", ""), payload.get("question", "")))
         except (KeyError, ValueError, json.JSONDecodeError) as error:
             self.send_json({"error": str(error)}, HTTPStatus.BAD_REQUEST)
 

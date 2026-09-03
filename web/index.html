@@ -94,6 +94,15 @@
               <input id="agentQuestion" value="分析该用户的长期沉默风险并给出运营建议" aria-label="Agent问题">
             </div>
             <div id="agentAnswer" class="agent-answer">选择用户后运行诊断。</div>
+            <div class="action-toolbar" aria-label="运营处理动作">
+              <select id="touchChannel" aria-label="触达渠道">
+                <option value="站内通知">站内通知</option>
+                <option value="邮件提醒">邮件提醒</option>
+              </select>
+              <button id="sendTouch" class="secondary-command" disabled>发送触达</button>
+              <button id="markHandled" class="outline-command" disabled>标记为已处理</button>
+              <span id="actionStatus" class="action-status" aria-live="polite"></span>
+            </div>
             <details id="traceDetails">
               <summary>查看工具调用轨迹</summary>
               <div id="toolTrace" class="tool-trace"></div>

@@ -20,6 +20,9 @@ class RetentionAgent:
         self.evaluation = json.loads(
             (artifact_dir / "evaluation.json").read_text(encoding="utf-8")
         )
+        # Prototype state replaces a production database for the demo.
+        self.status_map: dict[str, str] = {}
+        self.records: list[dict] = []
 
     def list_users(self, risk_tier: str = "全部", query: str = "") -> list[dict]:
         users = self.users
@@ -28,7 +31,34 @@ class RetentionAgent:
         query = query.strip().upper()
         if query:
             users = [user for user in users if query in user["user_id"].upper()]
-        return users
+        return [
+            {**user, "status": self.status_map.get(user["user_id"], "待处理")}
+            for user in users
+        ]
+
+    def apply_action(self, user_id: str, action: str, channel: str = "") -> dict:
+        if user_id not in self.user_map:
+            raise KeyError(f"Unknown user: {user_id}")
+        actions = {
+            "generate": "生成运营建议",
+            "send": "发送触达",
+            "handled": "标记为已处理",
+        }
+        if action not in actions:
+            raise ValueError("Unsupported action")
+        status = "已触达" if action == "send" else "已处理" if action == "handled" else "待处理"
+        self.status_map[user_id] = status
+        record = {
+            "user_id": user_id,
+            "action": actions[action],
+            "channel": channel or "站内通知 / 邮件提醒" if action == "send" else "",
+            "status": status,
+        }
+        self.records.insert(0, record)
+        return record
+
+    def list_records(self) -> list[dict]:
+        return self.records
 
     def get_profile(self, user_id: str) -> ToolResult:
         user = self.user_map[user_id]

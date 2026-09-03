@@ -91,6 +91,9 @@ function selectUser(user) {
   $("#agentAnswer").textContent = "用户已加载，等待运行Agent诊断。";
   $("#toolTrace").innerHTML = "";
   $("#runAgent").disabled = false;
+  $("#sendTouch").disabled = false;
+  $("#markHandled").disabled = false;
+  $("#actionStatus").textContent = "";
 }
 
 async function runAgent() {
@@ -114,6 +117,23 @@ async function runAgent() {
   `).join("");
   button.disabled = false;
   button.textContent = "重新诊断";
+}
+
+async function applyAction(action) {
+  if (!state.selected) return;
+  const response = await fetch("/api/action", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: state.selected.user_id,
+      action,
+      channel: $("#touchChannel").value,
+    }),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "操作失败");
+  $("#actionStatus").textContent = `${result.action}：${result.status}`;
+  await loadUsers();
 }
 
 function setupNavigation() {
@@ -143,6 +163,12 @@ function setupFilters() {
     searchTimer = setTimeout(loadUsers, 180);
   });
   $("#runAgent").addEventListener("click", runAgent);
+  $("#sendTouch").addEventListener("click", () => applyAction("send").catch(showActionError));
+  $("#markHandled").addEventListener("click", () => applyAction("handled").catch(showActionError));
+}
+
+function showActionError(error) {
+  $("#actionStatus").textContent = `操作失败：${error.message}`;
 }
 
 async function init() {
