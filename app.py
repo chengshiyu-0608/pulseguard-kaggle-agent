@@ -43,6 +43,7 @@ class Handler(BaseHTTPRequestHandler):
             keyword = query.get("q", [""])[0]
             limit = min(int(query.get("limit", ["50"])[0]), 200)
             users = AGENT.list_users(tier, keyword)
+            users.sort(key=lambda user: user.get("risk_score", 0), reverse=True)
             self.send_json({"total": len(users), "users": users[:limit]})
             return
         if parsed.path.startswith("/api/diagnose/"):
