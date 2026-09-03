@@ -67,6 +67,7 @@ function renderUsers() {
 }
 
 function selectUser(user) {
+  if (!user) return;
   state.selected = user;
   renderUsers();
   $("#selectedUser").textContent = user.user_id;
@@ -79,8 +80,12 @@ function selectUser(user) {
   $("#profileCompetitions").textContent = user.active_competitions ?? "--";
   $("#profileAverage").textContent = user.historical_average_submissions?.toFixed?.(1) ?? "--";
   $("#factorList").classList.remove("empty-state");
-  const maxContribution = Math.max(...user.factors.map((factor) => Math.abs(factor.contribution)), 0.01);
-  $("#factorList").innerHTML = user.factors.map((factor) => {
+  const factors = Array.isArray(user.factors) ? user.factors : [];
+  if (!factors.length) {
+    $("#factorList").innerHTML = `<div class="empty-state">暂无可用因素解释</div>`;
+  } else {
+    const maxContribution = Math.max(...factors.map((factor) => Math.abs(factor.contribution)), 0.01);
+    $("#factorList").innerHTML = factors.map((factor) => {
     const isRisk = factor.contribution > 0;
     const width = Math.max(8, Math.abs(factor.contribution) / maxContribution * 100);
     return `
@@ -88,7 +93,8 @@ function selectUser(user) {
         <div class="factor-row-top"><strong>${factor.label}</strong><span>${isRisk ? "+" : ""}${factor.contribution.toFixed(2)} · ${factor.direction}</span></div>
         <div class="factor-bar"><div class="factor-fill ${isRisk ? "risk" : "protect"}" style="width:${width}%"></div></div>
       </div>`;
-  }).join("");
+    }).join("");
+  }
   $("#actionList").innerHTML = "<li>点击“运行诊断”生成干预建议</li>";
   $("#agentAnswer").textContent = "用户已加载，等待运行Agent诊断。";
   $("#toolTrace").innerHTML = "";

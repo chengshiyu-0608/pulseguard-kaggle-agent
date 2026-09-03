@@ -16,6 +16,10 @@ class RetentionAgent:
     def __init__(self, artifact_dir: Path) -> None:
         self.artifact_dir = artifact_dir
         self.users = json.loads((artifact_dir / "users.json").read_text(encoding="utf-8"))
+        # Keep the prototype usable when an imported artifact has no factor array.
+        for user in self.users:
+            if not isinstance(user.get("factors"), list):
+                user["factors"] = []
         self.user_map = {user["user_id"]: user for user in self.users}
         self.evaluation = json.loads(
             (artifact_dir / "evaluation.json").read_text(encoding="utf-8")
