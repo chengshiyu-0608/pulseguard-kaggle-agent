@@ -37,7 +37,7 @@ async function loadSummary() {
 
 async function loadUsers() {
   const query = encodeURIComponent($("#userSearch").value.trim());
-  const params = new URLSearchParams({ q: $("#userSearch").value.trim(), limit: "80" });
+  const params = new URLSearchParams({ q: $("#userSearch").value.trim(), limit: "20" });
   if (state.tier !== "全部") params.set("tier", state.tier);
   const response = await fetch(`/api/users?${params.toString()}`, { cache: "no-store" });
   if (!response.ok) throw new Error(`用户列表请求失败（${response.status}）`);
