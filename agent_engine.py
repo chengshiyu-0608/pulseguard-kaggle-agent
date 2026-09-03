@@ -30,7 +30,8 @@ class RetentionAgent:
 
     def list_users(self, risk_tier: str = "全部", query: str = "") -> list[dict]:
         users = self.users
-        if risk_tier and risk_tier != "全部":
+        # Accept the legacy encoded label as well as the current UI label.
+        if risk_tier and risk_tier not in {"全部", "鍏ㄩ儴"}:
             users = [user for user in users if user["risk_tier"] == risk_tier]
         query = query.strip().upper()
         if query:
