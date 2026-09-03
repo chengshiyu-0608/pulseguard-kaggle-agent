@@ -37,9 +37,11 @@ async function loadSummary() {
 
 async function loadUsers() {
   const query = encodeURIComponent($("#userSearch").value.trim());
-  const response = await fetch(`/api/users?tier=${encodeURIComponent(state.tier)}&q=${query}&limit=80`);
+  const tier = state.tier === "全部" ? "" : encodeURIComponent(state.tier);
+  const response = await fetch(`/api/users?tier=${tier}&q=${query}&limit=80`);
+  if (!response.ok) throw new Error(`用户列表请求失败（${response.status}）`);
   const payload = await response.json();
-  state.users = payload.users;
+  state.users = Array.isArray(payload.users) ? payload.users : [];
   $("#userCount").textContent = `${payload.total.toLocaleString()} 名用户`;
   renderUsers();
   if (!state.selected && state.users.length) selectUser(state.users[0]);
@@ -190,4 +192,5 @@ async function init() {
 
 init().catch((error) => {
   $("#agentAnswer").textContent = `加载失败：${error.message}`;
+  $("#userList").innerHTML = `<div class="empty-state" style="height:160px">列表加载失败，请点击刷新重试</div>`;
 });
