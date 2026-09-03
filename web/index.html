@@ -30,7 +30,7 @@
           <div><span>今日已处理</span><strong>38</strong><small>完成率 8.5%</small></div>
         </div>
         <div class="queue-title"><h2>风险队列</h2><span id="userCount" class="muted">加载中</span><div class="segments"><button class="active" data-tier="全部">全部</button><button data-tier="高风险">高风险</button><button data-tier="中风险">中风险</button></div></div>
-        <div class="filters"><label>用户ID<input id="userSearch" placeholder="输入匿名ID"></label><label>风险类型<select><option>全部类型</option></select></label><label>处理状态<select><option>待处理</option><option>已触达</option><option>已处理</option></select></label><button class="reset">重置</button></div>
+        <div class="filters"><label>用户ID<input id="userSearch" placeholder="输入匿名ID"></label><label>风险类型<select id="riskType"><option value="全部类型">全部类型</option><option value="活跃下降型">活跃下降型</option><option value="参与动量不足">参与动量不足</option></select></label><label>处理状态<select id="statusFilter"><option value="待处理">待处理</option><option value="已触达">已触达</option><option value="已处理">已处理</option><option value="全部状态">全部状态</option></select></label><button class="reset" id="resetFilters">重置</button></div>
         <section class="queue-card">
           <div class="table-head"><span>用户ID</span><span>最近活跃</span><span>风险概率</span><span>主要风险类型</span><span>状态</span><span>操作</span></div>
           <div id="userList" class="user-list"></div>
@@ -48,6 +48,6 @@
       <div id="agentAnswer" class="agent-answer">选择用户后生成诊断。</div><div id="factorList" class="factor-list"></div><ol id="actionList" class="action-list"></ol><div id="toolTrace" class="tool-trace"></div>
     </aside>
   </main>
-  <script src="/app.js?v=20260903c"></script>
+  <script src="/app.js?v=20260903d"></script>
 </body>
 </html>

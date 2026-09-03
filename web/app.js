@@ -36,9 +36,10 @@ async function loadSummary() {
 }
 
 async function loadUsers() {
-  const query = encodeURIComponent($("#userSearch").value.trim());
   const params = new URLSearchParams({ q: $("#userSearch").value.trim(), limit: "20" });
   if (state.tier !== "全部") params.set("tier", state.tier);
+  if ($("#riskType").value !== "全部类型") params.set("risk_type", $("#riskType").value);
+  if ($("#statusFilter").value !== "全部状态") params.set("status", $("#statusFilter").value);
   const response = await fetch(`/api/users?${params.toString()}`, { cache: "no-store" });
   if (!response.ok) throw new Error(`用户列表请求失败（${response.status}）`);
   const payload = await response.json();
@@ -128,6 +129,9 @@ async function runAgent() {
   $("#toolTrace").innerHTML = (result.tool_trace || []).map((item) => `
     <div class="tool-item"><strong>${item.tool}</strong><span>${item.summary}</span></div>
   `).join("");
+  $("#agentAnswer").style.display = "block";
+  $("#actionList").style.display = "block";
+  $("#toolTrace").style.display = "block";
   button.disabled = false;
   button.textContent = "重新诊断";
 }
@@ -146,7 +150,22 @@ async function applyAction(action) {
   const result = await response.json();
   if (!response.ok) throw new Error(result.error || "操作失败");
   $("#actionStatus").textContent = `${result.action}：${result.status}`;
+  state.selected = null;
   await loadUsers();
+  await loadRecords();
+}
+
+async function loadRecords() {
+  const response = await fetch("/api/records", { cache: "no-store" });
+  const payload = await response.json();
+  const list = $("#recordList");
+  if (!payload.records?.length) {
+    list.textContent = "暂无处理记录";
+    return;
+  }
+  list.innerHTML = payload.records.map((record) => `
+    <div class="record-item"><strong>${record.user_id}</strong><span>${record.action}</span><span>${record.channel || "-"}</span><em>${record.status}</em></div>
+  `).join("");
 }
 
 function setupNavigation() {
@@ -156,6 +175,7 @@ function setupNavigation() {
       button.classList.add("active");
       $$(".view").forEach((view) => view.classList.remove("active"));
       $(`#${button.dataset.view}View`).classList.add("active");
+      if (button.dataset.view === "records") loadRecords();
     });
   });
 }
@@ -174,6 +194,20 @@ function setupFilters() {
   $("#userSearch").addEventListener("input", () => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(loadUsers, 180);
+  });
+  $("#riskType").addEventListener("change", loadUsers);
+  $("#statusFilter").addEventListener("change", () => {
+    state.selected = null;
+    loadUsers();
+  });
+  $("#resetFilters").addEventListener("click", () => {
+    $("#userSearch").value = "";
+    $("#riskType").value = "全部类型";
+    $("#statusFilter").value = "待处理";
+    state.tier = "全部";
+    $$(".segments button").forEach((item) => item.classList.toggle("active", item.dataset.tier === "全部"));
+    state.selected = null;
+    loadUsers();
   });
   $("#runAgent").addEventListener("click", runAgent);
   $("#sendTouch").addEventListener("click", () => applyAction("send").catch(showActionError));

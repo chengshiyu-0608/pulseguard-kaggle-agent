@@ -41,8 +41,17 @@ class Handler(BaseHTTPRequestHandler):
             query = parse_qs(parsed.query)
             tier = query.get("tier", ["全部"])[0]
             keyword = query.get("q", [""])[0]
+            risk_type = query.get("risk_type", [""])[0]
+            status = query.get("status", [""])[0]
             limit = min(int(query.get("limit", ["50"])[0]), 200)
             users = AGENT.list_users(tier, keyword)
+            if risk_type and risk_type != "全部类型":
+                users = [
+                    user for user in users
+                    if (user.get("risk_type") or ("活跃下降型" if user.get("active_days", 0) <= 2 else "参与动量不足")) == risk_type
+                ]
+            if status and status != "全部状态":
+                users = [user for user in users if user.get("status") == status]
             users.sort(key=lambda user: user.get("risk_score", 0), reverse=True)
             self.send_json({"total": len(users), "users": users[:limit]})
             return
