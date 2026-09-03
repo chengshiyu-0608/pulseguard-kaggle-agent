@@ -118,7 +118,7 @@ async function runAgent() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       user_id: state.selected.user_id,
-      question: $("#agentQuestion").value,
+      question: $("#agentQuestion")?.value || "",
     }),
   });
   const result = await response.json();
