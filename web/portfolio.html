@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>程诗雨｜产品作品集</title>
+  <link rel="stylesheet" href="portfolio.css?v=2">
+</head>
+<body>
+  <script>const style = new URLSearchParams(location.search).get('style'); if (style === 'consulting' || style === 'data') document.body.classList.add('style-' + style);</script>
+  <header class="topbar">
+    <div class="brand"><div class="mark">PG</div><div><strong>程诗雨的产品作品集</strong><small>产品运营 / 用户运营 / AI 产品</small></div></div>
+    <nav><a href="#project">项目介绍</a><a href="#materials">项目材料</a><a href="https://pulseguard-kaggle-agent-d04t.onrender.com" target="_blank" rel="noreferrer">在线 Demo</a><a href="https://github.com/chengshiyu-0608/pulseguard-kaggle-agent" target="_blank" rel="noreferrer">GitHub</a></nav>
+  </header>
+  <main>
+    <section class="hero" id="project">
+      <div class="hero-copy"><span class="eyebrow">PRODUCT CASE STUDY · 01</span><h1>PulseGuard</h1><p>社区用户沉默预警与运营策略 Agent。将“识别风险、解释因素、生成建议、人工复核、完成触达”串成可演示的运营工作闭环。</p><div class="actions"><a class="button" href="https://pulseguard-kaggle-agent-d04t.onrender.com" target="_blank" rel="noreferrer">打开在线 Demo</a><a class="button secondary" href="https://github.com/chengshiyu-0608/pulseguard-kaggle-agent" target="_blank" rel="noreferrer">查看 GitHub 源码</a></div></div>
+      <div class="hero-card"><span>项目定位</span><strong>让运营人员更早发现沉默风险，并把模型结果转化为可执行动作。</strong><dl><dt>数据</dt><dd>Meta Kaggle 公开行为数据</dd><dt>对象</dt><dd>匿名社区用户</dd><dt>形态</dt><dd>Agent + 运营工作台</dd></dl></div>
+    </section>
+    <section class="wrap"><div class="section-head"><div><h2>问题定义</h2><p>从运营工作场景出发，明确产品解决什么问题。</p></div></div><div class="grid"><article class="panel"><strong>01</strong><h3>识别太晚</h3><p>用户完全沉默后才被发现，运营缺少提前介入窗口。</p></article><article class="panel"><strong>02</strong><h3>无法排序</h3><p>风险用户数量较多，缺少优先级明确的处理队列。</p></article><article class="panel"><strong>03</strong><h3>难以行动</h3><p>模型分数不能直接告诉运营下一步如何触达与留痕。</p></article></div></section>
+    <section class="wrap"><div class="section-head"><div><h2>用户与场景</h2><p>服务对象是社区运营人员，而不是数据科学研究者。</p></div></div><div class="split"><article class="panel"><h3>用户</h3><p>社区运营、用户增长及活动运营人员，需要在日常工作中筛选重点用户并完成召回动作。</p></article><article class="panel"><h3>典型场景</h3><p>进入风险队列 → 查看用户详情 → 了解关键因素 → 生成运营建议 → 发送站内通知或邮件 → 标记处理完成。</p></article></div></section>
+    <section class="wrap" id="materials"><div class="section-head"><div><h2>项目材料</h2><p>按“需求—流程—原型—实现—评测”顺序查看完整案例。</p></div></div><div class="material-grid"><a class="material" href="https://ncntzuhy7tbo.feishu.cn/wiki/Bje9wsfl4ivM14kRvGucbmCUnVe" target="_blank" rel="noreferrer"><b>PRD</b><span>在线阅读需求文档</span></a><a class="material" href="flowchart.pdf" target="_blank"><b>流程图</b><span>打开 PDF 泳道流程</span></a><a class="material" href="https://pulseguard-kaggle-agent-d04t.onrender.com" target="_blank" rel="noreferrer"><b>原型图</b><span>进入在线 Demo 工作台</span></a><a class="material" href="https://pulseguard-kaggle-agent-d04t.onrender.com" target="_blank" rel="noreferrer"><b>诊断页</b><span>进入在线 Demo 查看诊断</span></a><a class="material" href="#implementation"><b>技术实现</b><span>Agent 工具链与状态管理</span></a><a class="material" href="https://github.com/chengshiyu-0608/pulseguard-kaggle-agent" target="_blank" rel="noreferrer"><b>源码</b><span>GitHub 项目仓库</span></a></div></section>
+    <section class="wrap" id="implementation"><div class="section-head"><div><h2>技术实现与评测</h2><p>离线原型用于验证产品链路，不将模型相关性表述为因果关系。</p></div></div><div class="split"><article class="panel"><h3>技术实现</h3><p>Python 后端接口、风险概率计算、Agent 工具链编排、前端运营工作台、风险筛选与排序、触达和处理状态交互、Render 在线部署。</p></article><article class="panel"><h3>产品边界</h3><p>当前使用匿名公开数据和服务端模拟状态；核心计算由确定性工具完成，Agent 负责编排和结果组织，最终动作由运营人员确认。</p></article></div><div class="metrics"><div class="metric"><strong>0.777</strong><span>ROC AUC</span></div><div class="metric"><strong>73.6%</strong><span>测试准确率</span></div><div class="metric"><strong>82.3%</strong><span>召回率</span></div></div><div class="note">评测结果来自时间留出离线验证，不代表真实线上运营效果；风险解释展示统计关联，不等同于因果结论。</div></section>
+  </main>
+  <footer class="footer"><div><strong>程诗雨</strong><span>女｜13667163856｜13667163856@163.com</span><span>求职意向：产品运营 / 用户运营 / 产品经理实习生</span></div><a href="mailto:13667163856@163.com">联系我</a></footer>
+</body>
+</html>
